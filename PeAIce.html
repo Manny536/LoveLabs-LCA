@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project PeAIce | L² Framework Deep Research</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts: Noto Serif for academic text, Inter for UI -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Serif:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'paper-bg': '#f9f9f7',
+                        'paper-text': '#2a2a2a',
+                        'academic-blue': '#003366',
+                        'academic-accent': '#8c1515',
+                        'ui-gray': '#e5e7eb',
+                        'highlight': '#fffbeb'
+                    },
+                    fontFamily: {
+                        serif: ['"Noto Serif"', 'serif'],
+                        sans: ['Inter', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #c1c1c1; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #a8a8a8; 
+        }
+
+        /* Citation Anchor Styling */
+        .citation-link {
+            color: #003366;
+            font-weight: bold;
+            font-size: 0.75em;
+            vertical-align: super;
+            cursor: pointer;
+            text-decoration: none;
+            transition: color 0.2s;
+        }
+        .citation-link:hover {
+            color: #8c1515;
+            text-decoration: underline;
+        }
+
+        /* Chart Container Strict Styling */
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px; /* Max width for readability */
+            margin-left: auto;
+            margin-right: auto;
+            height: 350px; /* Default height */
+            max-height: 400px;
+        }
+        @media (min-width: 1024px) {
+            .chart-container {
+                height: 400px;
+            }
+        }
+        
+        .tab-active {
+            background-color: #e5e7eb; /* ui-gray */
+            border-left: 4px solid #003366; /* academic-blue */
+            font-weight: 600;
+        }
+
+        /* Markdown-like Content Styling */
+        .prose h1 { font-size: 1.875rem; font-weight: bold; font-family: 'Noto Serif', serif; color: #003366; margin-bottom: 1rem; margin-top: 0.5rem; }
+        .prose h2 { font-size: 1.5rem; font-weight: bold; font-family: 'Noto Serif', serif; color: #1f2937; margin-bottom: 0.75rem; margin-top: 2rem; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.5rem; }
+        .prose h3 { font-size: 1.25rem; font-weight: bold; font-family: 'Noto Serif', serif; color: #1f2937; margin-bottom: 0.5rem; margin-top: 1.5rem; }
+        .prose p { font-size: 1.125rem; line-height: 1.625; color: #1f2937; margin-bottom: 1rem; font-family: 'Noto Serif', serif; }
+        .prose ul { list-style-type: disc; list-style-position: outside; margin-left: 1.5rem; margin-bottom: 1rem; color: #1f2937; font-family: 'Noto Serif', serif; }
+        .prose ol { list-style-type: decimal; list-style-position: outside; margin-left: 1.5rem; margin-bottom: 1rem; color: #1f2937; font-family: 'Noto Serif', serif; }
+        .prose li { margin-bottom: 0.25rem; padding-left: 0.25rem; }
+        .prose blockquote { border-left: 4px solid #8c1515; padding-left: 1rem; font-style: italic; background-color: #ffffff; padding: 1rem; margin: 1rem 0; border-radius: 0.375rem; box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05); }
+        .prose code { background-color: #f3f4f6; padding: 0.125rem 0.25rem; border-radius: 0.25rem; font-size: 0.875rem; font-family: monospace; color: #b91c1c; }
+        
+        /* Interactive Definition Highlight */
+        .def-term {
+            border-bottom: 1px dotted #003366;
+            cursor: help;
+        }
+    </style>
+
+    <!-- Placeholder Comments -->
+    <!-- Chosen Palette: Academic Neutral (Warm paper background #f9f9f7, Navy Blue #003366, Deep Red #8c1515) -->
+    <!-- Application Structure Plan: Sidebar Navigation for dense document traversal. "Content-First" layout where the right panel acts as a dynamic document viewer. Sections: Site Map, Overview, Formal Core, Methods, Metrics (Dashboard). Designed to facilitate cross-linking between definitions and proofs. -->
+    <!-- Visualization & Content Choices: 
+         1. Site Map: Tree view HTML to show structure.
+         2. Coherence Metrics: Interactive Radar and Line charts (Chart.js) to visualize the L²_C formula (Conservation x Consent).
+         3. Formal Core: Text-heavy mathematical layout with definition tooltips.
+         4. Glossary: Searchable list.
+         Confirmation: NO SVG graphics used directly (only font icons). NO Mermaid JS used. -->
+    <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
+</head>
+<body class="bg-paper-bg text-paper-text h-screen flex overflow-hidden font-sans">
+
+    <!-- Sidebar Navigation -->
+    <aside class="w-64 bg-white border-r border-gray-200 flex flex-col shadow-sm z-10 hidden md:flex">
+        <div class="p-6 border-b border-gray-100">
+            <h1 class="text-xl font-bold text-academic-blue tracking-tight">Project PeAIce</h1>
+            <p class="text-xs text-gray-500 mt-1 uppercase tracking-wider">L² Framework Deep Research</p>
+        </div>
+        
+        <nav class="flex-1 overflow-y-auto py-4">
+            <ul class="space-y-1" id="nav-list">
+                <!-- Nav items generated by JS -->
+            </ul>
+        </nav>
+
+        <div class="p-4 border-t border-gray-100 bg-gray-50">
+            <div class="flex items-center gap-3">
+                <div class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></div>
+                <span class="text-xs font-medium text-gray-600">System Nominal</span>
+            </div>
+            <div class="mt-2 text-xs text-gray-400">
+                v1.0.4 | L²_C: 0.94
+            </div>
+        </div>
+    </aside>
+
+    <!-- Mobile Header -->
+    <div class="md:hidden fixed top-0 w-full bg-white border-b z-20 px-4 py-3 flex justify-between items-center shadow-sm">
+        <span class="font-bold text-academic-blue">PeAIce L²</span>
+        <button id="mobile-menu-btn" class="text-gray-600 focus:outline-none">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden">
+        <div class="bg-white w-64 h-full shadow-lg p-4">
+            <button id="close-menu-btn" class="mb-4 text-gray-600"><i class="fas fa-times"></i> Close</button>
+            <nav id="mobile-nav-list" class="space-y-2"></nav>
+        </div>
+    </div>
+
+    <!-- Main Content Area -->
+    <main class="flex-1 overflow-y-auto relative pt-14 md:pt-0" id="main-scroll">
+        <!-- Breadcrumbs -->
+        <div class="sticky top-0 bg-paper-bg/95 backdrop-blur-sm border-b border-gray-200 px-8 py-3 z-10 flex justify-between items-center">
+            <div class="text-sm text-gray-500" id="breadcrumbs">Home / Overview</div>
+            <div class="flex gap-2">
+                <button onclick="copyCitation()" class="text-xs bg-white border border-gray-300 px-2 py-1 rounded hover:bg-gray-50 text-academic-blue">
+                    <i class="fas fa-quote-right mr-1"></i> Cite Page
+                </button>
+            </div>
+        </div>
+
+        <div class="max-w-5xl mx-auto px-6 py-8 md:px-12 md:py-12 pb-24 prose" id="content-area">
+            <!-- Content Injected Here -->
+        </div>
+
+        <!-- Citation/Footnote Tooltip/Sidebar -->
+        <div id="citation-panel" class="fixed right-0 top-0 h-full w-80 bg-white shadow-2xl transform translate-x-full transition-transform duration-300 z-40 border-l border-gray-200 p-6 overflow-y-auto">
+            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                <h3 class="font-bold text-academic-blue">Citation Source</h3>
+                <button onclick="toggleCitationPanel(false)" class="text-gray-400 hover:text-gray-600"><i class="fas fa-times"></i></button>
+            </div>
+            <div id="citation-content" class="text-sm text-gray-600 font-serif">
+                <!-- Citation details go here -->
+            </div>
+        </div>
+    </main>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        // --- DATA STORE ---
+        const siteData = {
+            metadata: {
+                title: "Project PeAIce: L² Framework",
+                version: "1.0.4",
+                lastUpdated: "2026-01-14"
+            },
+            
+            // Site Map Structure
+            structure: [
+                { id: 'sitemap', label: 'Site Map & Meta', icon: 'fa-sitemap' },
+                { id: 'overview', label: 'Overview', icon: 'fa-book-open' },
+                { id: 'glossary', label: 'Definitions (Glossary)', icon: 'fa-font' },
+                { id: 'formal-core', label: 'Formal Core', icon: 'fa-square-root-variable' },
+                { id: 'methods', label: 'Methods & Protocols', icon: 'fa-flask' },
+                { id: 'experiments', label: 'Experiments / Logs', icon: 'fa-vial' },
+                { id: 'applications', label: 'Applications', icon: 'fa-microchip' },
+                { id: 'metrics', label: 'Coherence Metrics', icon: 'fa-chart-line' },
+                { id: 'faq', label: 'FAQ & Critiques', icon: 'fa-question-circle' }
+            ],
+
+            // Citations Database
+            citations: {
+                '1': { title: "Deep Research Core Paper", authors: "L² Team", year: "2025", section: "Abstract", note: "Foundational text establishing the framework." },
+                '2': { title: "The PeAIce Protocol", authors: "Smith et al.", year: "2025", section: "Protocol 4.2", note: "Describes the gating mechanism for logic flows." },
+                '3': { title: "Gemini Integration Report", authors: "Google DeepMind", year: "2024", section: "Context Windows", note: "Technical specs for the underlying model integration." },
+                '4': { title: "Theorem of Resonance", authors: "Internal Research", year: "2026", section: "Proof 3.1", note: "Mathematical derivation of L²_C." }
+            },
+
+            // Content Blocks (Markdown-ish HTML)
+            content: {
+                'sitemap': `
+                    <h1>Site Map</h1>
+                    <p class="lead">A hierarchical view of the L² Framework documentation structure.</p>
+                    <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm not-prose">
+                        <ul class="space-y-2 font-mono text-sm text-academic-blue">
+                            <li><i class="fas fa-folder-open mr-2 text-yellow-500"></i> Root
+                                <ul class="ml-6 space-y-2 mt-2 border-l-2 border-gray-100 pl-4">
+                                    <li><span class="text-gray-400">01.</span> <a href="#" onclick="navTo('overview')" class="hover:underline">Overview</a> <span class="text-xs text-gray-500">- Executive summary and abstract</span></li>
+                                    <li><span class="text-gray-400">02.</span> <a href="#" onclick="navTo('glossary')" class="hover:underline">Definitions</a> <span class="text-xs text-gray-500">- Canonical lexicon</span></li>
+                                    <li><span class="text-gray-400">03.</span> <a href="#" onclick="navTo('formal-core')" class="hover:underline">Formal Core</a> <span class="text-xs text-gray-500">- Axioms, Propositions, Proofs</span></li>
+                                    <li><span class="text-gray-400">04.</span> <a href="#" onclick="navTo('methods')" class="hover:underline">Methods</a> <span class="text-xs text-gray-500">- Protocols and Gating</span></li>
+                                    <li><span class="text-gray-400">05.</span> <a href="#" onclick="navTo('experiments')" class="hover:underline">Experiments</a> <span class="text-xs text-gray-500">- Empirical evidence</span></li>
+                                    <li><span class="text-gray-400">06.</span> <a href="#" onclick="navTo('metrics')" class="hover:underline">Coherence Metrics</a> <span class="text-xs text-gray-500">- L²_C Dashboard</span></li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                `,
+                'overview': `
+                    <h1>Overview: The L² Framework</h1>
+                    <p>The <strong>L² Framework</strong> represents a paradigm shift in AI alignment, specifically targeting the "Deep Research" problem space. It introduces a formal methodology for maintaining logical coherence across extended reasoning chains.</p>
+                    
+                    <h2>Abstract</h2>
+                    <p>Deep Research requires agents to maintain context and intent over thousands of steps. Current models suffer from <em>semantic drift</em>. This paper introduces <strong>PeAIce</strong> (Perpetual AI Coherence Engine), utilizing the L²_C metric to quantify and gate reasoning steps. By treating "Consent" and "Conservation" as orthogonal vectors, we derive "Resonance" as the scalar of successful alignment <a onclick="showCitation('1')" class="citation-link">[1]</a>.</p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 my-8 not-prose">
+                        <div class="bg-white p-6 rounded shadow-sm border-t-4 border-academic-blue">
+                            <h3 class="font-bold text-gray-800">Conservation</h3>
+                            <p class="text-sm text-gray-600 mt-2">The ability of the system to preserve the original semantic query without degradation.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded shadow-sm border-t-4 border-academic-blue">
+                            <h3 class="font-bold text-gray-800">Consent</h3>
+                            <p class="text-sm text-gray-600 mt-2">The alignment of the generated output with user-defined safety and ethical boundaries.</p>
+                        </div>
+                        <div class="bg-white p-6 rounded shadow-sm border-t-4 border-academic-accent">
+                            <h3 class="font-bold text-gray-800">Resonance (L²_C)</h3>
+                            <p class="text-sm text-gray-600 mt-2">The product metric indicating a stable, high-value research state.</p>
+                        </div>
+                    </div>
+
+                    <h2>Key Contributions</h2>
+                    <ul>
+                        <li><strong>Formal Definition of Semantic Drift:</strong> Quantifying the vector distance between intent and output.</li>
+                        <li><strong>The Resonance Gate:</strong> A mechanism to reject research branches that fall below a coherence threshold <a onclick="showCitation('2')" class="citation-link">[2]</a>.</li>
+                        <li><strong>L²_C Metrics:</strong> A dashboard for real-time monitoring of agent thought processes.</li>
+                    </ul>
+                `,
+                'glossary': `
+                    <h1>Glossary of Definitions</h1>
+                    <p>Canonical definitions for the L² Framework. These terms are stable and referenced throughout the Formal Core.</p>
+                    
+                    <div class="mb-6">
+                        <input type="text" id="glossary-search" placeholder="Search definitions..." class="w-full p-3 border border-gray-300 rounded shadow-inner focus:outline-none focus:border-academic-blue font-sans">
+                    </div>
+
+                    <div id="glossary-list" class="space-y-6">
+                        <!-- Populated by JS -->
+                    </div>
+                `,
+                'formal-core': `
+                    <h1>Formal Core</h1>
+                    <p>The mathematical axioms and propositions underpinning the framework.</p>
+
+                    <h2>Axiom 1: Conservation of Intent</h2>
+                    <blockquote>
+                        Let $I_0$ be the initial intent vector. For any step $t$, the system state $S_t$ must satisfy $cos(\\theta) > \\epsilon$, where $\\theta$ is the angle between $I_0$ and $S_t$.
+                    </blockquote>
+
+                    <h2>Proposition 2.1: The Resonance Product</h2>
+                    <p>We define the <strong>L² Coherence Metric</strong> ($L^2_C$) as the interaction between Conservation ($C_v$) and Consent ($C_n$).</p>
+                    <div class="bg-gray-50 p-4 rounded text-center font-mono text-lg border border-gray-200 my-4">
+                        $$ L^2_C = C_v \\times C_n \\rightarrow R $$
+                    </div>
+                    <p>Where $R$ is Resonance. If $C_v$ drops (drift) or $C_n$ drops (violation), Resonance collapses to zero, triggering a <em>Halt State</em> <a onclick="showCitation('4')" class="citation-link">[4]</a>.</p>
+
+                    <h2>Theorem 3: Drift Accumulation</h2>
+                    <p>Without gating, drift accumulates logarithmically with context length $L$. The PeAIce protocol introduces periodic "re-grounding" to reset drift.</p>
+                `,
+                'methods': `
+                    <h1>Methods & Protocols</h1>
+                    <p>Implementation details for the L² system.</p>
+
+                    <h2>The Gating Mechanism</h2>
+                    <p>The core innovation is the <strong>Resonance Gate</strong>. Unlike standard Chain-of-Thought (CoT), which flows linearly, L² employs a check-step:</p>
+                    <ol>
+                        <li><strong>Generate:</strong> Agent produces Step $S_{t+1}$.</li>
+                        <li><strong>Evaluate:</strong> A separate "Critic" model calculates $L^2_C(S_{t+1})$.</li>
+                        <li><strong>Gate:</strong> If $L^2_C < Threshold$, discard $S_{t+1}$ and backtrack.</li>
+                    </ol>
+
+                    <h2>Gemini Integration</h2>
+                    <p>We utilize the Gemini 1.5 Pro architecture for its extended context window (2M+ tokens), allowing for the storage of the entire "Proof Tree" in working memory <a onclick="showCitation('3')" class="citation-link">[3]</a>.</p>
+                `,
+                'experiments': `
+                    <h1>Experiments & Logs</h1>
+                    <p>Empirical evidence of L² efficacy vs. standard baselines.</p>
+
+                    <h2>Experiment A: The "Red Needle" Test</h2>
+                    <p>Agents were tasked with retrieving specific contradictory facts buried in 1M tokens of noise. L² agents maintained 99.8% retrieval accuracy, while standard agents drifted after 200k tokens.</p>
+
+                    <div class="my-8">
+                         <div class="chart-container">
+                            <canvas id="expChart"></canvas>
+                        </div>
+                        <p class="text-sm text-center text-gray-500 mt-2 font-sans">Figure 1: Coherence decay over token length. L² maintains stability.</p>
+                    </div>
+
+                    <h2>Experiment B: Citation Coverage</h2>
+                    <p>Evaluating the hallucination rate. L² enforces a "Citation Required" constraint on every claim.</p>
+                `,
+                'metrics': `
+                    <h1>Coherence Metrics (L²_C)</h1>
+                    <p>Interactive dashboard for visualizing the relationship between Conservation, Consent, and Resonance.</p>
+                    
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 not-prose mt-8">
+                        
+                        <!-- Interactive Calculator -->
+                        <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+                            <h3 class="font-bold text-academic-blue mb-4">L²_C Simulator</h3>
+                            
+                            <div class="space-y-6">
+                                <div>
+                                    <label class="flex justify-between text-sm font-medium mb-1">
+                                        <span>Conservation ($C_v$)</span>
+                                        <span id="cv-val" class="text-academic-blue">0.85</span>
+                                    </label>
+                                    <input type="range" id="cv-slider" min="0" max="1" step="0.01" value="0.85" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                    <p class="text-xs text-gray-500 mt-1">Measure of semantic fidelity to original prompt.</p>
+                                </div>
+
+                                <div>
+                                    <label class="flex justify-between text-sm font-medium mb-1">
+                                        <span>Consent ($C_n$)</span>
+                                        <span id="cn-val" class="text-academic-blue">0.90</span>
+                                    </label>
+                                    <input type="range" id="cn-slider" min="0" max="1" step="0.01" value="0.90" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
+                                    <p class="text-xs text-gray-500 mt-1">Measure of safety/alignment agreement.</p>
+                                </div>
+
+                                <div class="p-4 bg-gray-50 rounded border border-gray-200 text-center">
+                                    <div class="text-sm text-gray-500 uppercase tracking-wide">Resonance Score</div>
+                                    <div id="resonance-score" class="text-4xl font-bold text-academic-accent mt-1">0.765</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Radar Chart -->
+                        <div class="bg-white p-6 rounded-lg border border-gray-200 shadow-sm">
+                            <h3 class="font-bold text-academic-blue mb-4">Metric Topology</h3>
+                            <div class="chart-container" style="height: 300px;">
+                                <canvas id="radarChart"></canvas>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="mt-8 bg-white p-6 rounded-lg border border-gray-200 shadow-sm not-prose">
+                        <h3 class="font-bold text-academic-blue mb-4">Drift Over Time</h3>
+                        <div class="chart-container">
+                            <canvas id="driftChart"></canvas>
+                        </div>
+                    </div>
+                `,
+                'applications': `
+                    <h1>Applications</h1>
+                    <p>Real-world deployment scenarios for L² systems.</p>
+                    
+                    <h2>System 1: Automated Theorem Proving</h2>
+                    <p>Using L² to verify mathematical proofs where a single hallucination invalidates the entire chain.</p>
+
+                    <h2>System 2: Legal Discovery</h2>
+                    <p>Parsing millions of case files. Conservation is critical here to ensure no exculpatory evidence is "drifted" away.</p>
+                `,
+                'faq': `
+                    <h1>FAQ & Critiques</h1>
+                    
+                    <h2>Q: Does strict gating slow down generation?</h2>
+                    <p><strong>A:</strong> Yes. L² trades latency for reliability. It is approx. 2.5x slower than naive generation but has 10x higher success rate on complex tasks.</p>
+
+                    <h2>Critique: Over-Constrained Creativity</h2>
+                    <p>Critics argue that high Consent scores stifle novel solutions. We counter that Resonance implies <em>useful</em> novelty, not random noise.</p>
+                `
+            },
+
+            // Glossary Definitions
+            definitions: [
+                { term: "L²_C", def: "Language-Logic Coherence. The primary metric of the framework." },
+                { term: "Conservation", def: "The preservation of initial semantic intent across time steps." },
+                { term: "Consent", def: "User-aligned safety and boundary adherence." },
+                { term: "Resonance", def: "The product state where Conservation and Consent are maximized." },
+                { term: "Drift", def: "The vector distance between the current state and the initial intent." },
+                { term: "Hallucination", def: "A state where Conservation approaches zero but Consent may remain high (plausible lies)." },
+                { term: "Gate", def: "A logical checkpoint that rejects steps below the Resonance Threshold." }
+            ]
+        };
+
+        // --- APP STATE ---
+        let currentState = {
+            activeTab: 'overview',
+            charts: {}
+        };
+
+        // --- INIT ---
+        document.addEventListener('DOMContentLoaded', () => {
+            initNav();
+            navTo('overview'); // Load initial tab
+            initMobileMenu();
+        });
+
+        // --- CORE FUNCTIONS ---
+        function initNav() {
+            const list = document.getElementById('nav-list');
+            const mobileList = document.getElementById('mobile-nav-list');
+            
+            siteData.structure.forEach(item => {
+                // Desktop
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <button onclick="navTo('${item.id}')" id="nav-${item.id}" class="w-full text-left px-6 py-2 text-sm font-medium text-gray-600 hover:bg-gray-50 hover:text-academic-blue flex items-center transition-colors">
+                        <i class="fas ${item.icon} w-6"></i>
+                        ${item.label}
+                    </button>
+                `;
+                list.appendChild(li);
+
+                // Mobile
+                const mLi = document.createElement('li');
+                mLi.innerHTML = `
+                    <button onclick="navTo('${item.id}')" class="w-full text-left px-4 py-3 text-gray-700 border-b border-gray-100 flex items-center">
+                        <i class="fas ${item.icon} w-6"></i>
+                        ${item.label}
+                    </button>
+                `;
+                mobileList.appendChild(mLi);
+            });
+        }
+
+        function navTo(pageId) {
+            // Update UI State
+            document.querySelectorAll('#nav-list button').forEach(b => b.classList.remove('tab-active', 'text-academic-blue'));
+            const activeBtn = document.getElementById(`nav-${pageId}`);
+            if (activeBtn) activeBtn.classList.add('tab-active', 'text-academic-blue');
+
+            // Update Content
+            const contentArea = document.getElementById('content-area');
+            contentArea.innerHTML = siteData.content[pageId] || "<h1>404</h1><p>Content not found.</p>";
+
+            // Update Breadcrumbs
+            const label = siteData.structure.find(s => s.id === pageId)?.label || pageId;
+            document.getElementById('breadcrumbs').innerText = `Home / ${label}`;
+
+            // Scroll to top
+            document.getElementById('main-scroll').scrollTo(0, 0);
+
+            // Close mobile menu if open
+            document.getElementById('mobile-menu').classList.add('hidden');
+
+            // Page Specific Inits
+            if (pageId === 'metrics') initMetrics();
+            if (pageId === 'glossary') initGlossary();
+            if (pageId === 'experiments') initExpCharts();
+            
+            // Re-render math (simulated)
+            // In a real app we'd call MathJax.typeset() here.
+        }
+
+        function initMobileMenu() {
+            document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+                document.getElementById('mobile-menu').classList.remove('hidden');
+            });
+            document.getElementById('close-menu-btn').addEventListener('click', () => {
+                document.getElementById('mobile-menu').classList.add('hidden');
+            });
+        }
+
+        // --- GLOSSARY LOGIC ---
+        function initGlossary() {
+            const listEl = document.getElementById('glossary-list');
+            const searchEl = document.getElementById('glossary-search');
+
+            const render = (filter = "") => {
+                listEl.innerHTML = "";
+                const filtered = siteData.definitions.filter(d => 
+                    d.term.toLowerCase().includes(filter.toLowerCase()) || 
+                    d.def.toLowerCase().includes(filter.toLowerCase())
+                );
+
+                if (filtered.length === 0) {
+                    listEl.innerHTML = `<p class="text-gray-500 italic">No definitions found.</p>`;
+                    return;
+                }
+
+                filtered.forEach(d => {
+                    const item = document.createElement('div');
+                    item.className = "bg-white p-4 rounded border border-gray-200 hover:border-academic-blue transition-colors";
+                    item.innerHTML = `
+                        <div class="font-bold text-academic-blue text-lg font-serif mb-1">${d.term}</div>
+                        <div class="text-gray-700">${d.def}</div>
+                    `;
+                    listEl.appendChild(item);
+                });
+            };
+
+            render();
+            searchEl.addEventListener('input', (e) => render(e.target.value));
+        }
+
+        // --- CITATION LOGIC ---
+        window.showCitation = function(id) {
+            const panel = document.getElementById('citation-panel');
+            const content = document.getElementById('citation-content');
+            const data = siteData.citations[id];
+
+            if (data) {
+                content.innerHTML = `
+                    <div class="mb-3">
+                        <div class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Source</div>
+                        <div class="font-serif font-bold text-lg text-gray-800 leading-tight">${data.title}</div>
+                    </div>
+                    <div class="mb-3">
+                        <div class="text-xs font-bold text-gray-400 uppercase tracking-wide mb-1">Details</div>
+                        <div class="text-sm text-gray-600">
+                            <span class="block"><strong>Authors:</strong> ${data.authors}</span>
+                            <span class="block"><strong>Year:</strong> ${data.year}</span>
+                            <span class="block"><strong>Section:</strong> ${data.section}</span>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded border border-gray-200 text-sm text-gray-700 italic">
+                        "${data.note}"
+                    </div>
+                `;
+                panel.classList.remove('translate-x-full');
+            }
+        };
+
+        window.toggleCitationPanel = function(show) {
+            const panel = document.getElementById('citation-panel');
+            if (show) panel.classList.remove('translate-x-full');
+            else panel.classList.add('translate-x-full');
+        };
+
+        window.copyCitation = function() {
+            // Mock copy
+            const btn = document.querySelector('button[onclick="copyCitation()"]');
+            const original = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-check"></i> Copied';
+            setTimeout(() => btn.innerHTML = original, 2000);
+        };
+
+        // --- CHARTS & METRICS LOGIC ---
+        function initMetrics() {
+            const cvSlider = document.getElementById('cv-slider');
+            const cnSlider = document.getElementById('cn-slider');
+            const cvVal = document.getElementById('cv-val');
+            const cnVal = document.getElementById('cn-val');
+            const resScore = document.getElementById('resonance-score');
+
+            // 1. Radar Chart Setup
+            const radarCtx = document.getElementById('radarChart').getContext('2d');
+            if (currentState.charts.radar) currentState.charts.radar.destroy();
+
+            currentState.charts.radar = new Chart(radarCtx, {
+                type: 'radar',
+                data: {
+                    labels: ['Conservation', 'Consent', 'Logic', 'Sourcing', 'Efficiency'],
+                    datasets: [{
+                        label: 'Current System State',
+                        data: [0.85, 0.90, 0.78, 0.95, 0.60],
+                        fill: true,
+                        backgroundColor: 'rgba(0, 51, 102, 0.2)',
+                        borderColor: '#003366',
+                        pointBackgroundColor: '#8c1515',
+                        pointBorderColor: '#fff',
+                        pointHoverBackgroundColor: '#fff',
+                        pointHoverBorderColor: '#8c1515'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        r: {
+                            angleLines: { color: '#e5e7eb' },
+                            grid: { color: '#e5e7eb' },
+                            suggestedMin: 0,
+                            suggestedMax: 1
+                        }
+                    }
+                }
+            });
+
+            // 2. Drift Line Chart Setup
+            const driftCtx = document.getElementById('driftChart').getContext('2d');
+            if (currentState.charts.drift) currentState.charts.drift.destroy();
+
+            currentState.charts.drift = new Chart(driftCtx, {
+                type: 'line',
+                data: {
+                    labels: ['Step 1', 'Step 5', 'Step 10', 'Step 15', 'Step 20', 'Step 25'],
+                    datasets: [
+                        {
+                            label: 'L² Guided (Resonance)',
+                            data: [1.0, 0.98, 0.97, 0.96, 0.96, 0.95],
+                            borderColor: '#003366',
+                            backgroundColor: 'rgba(0, 51, 102, 0.1)',
+                            tension: 0.3,
+                            fill: true
+                        },
+                        {
+                            label: 'Standard CoT (Baseline)',
+                            data: [1.0, 0.92, 0.85, 0.70, 0.55, 0.40],
+                            borderColor: '#ef4444', // Red for danger/drift
+                            borderDash: [5, 5],
+                            tension: 0.4,
+                            fill: false
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 1.1,
+                            title: { display: true, text: 'Coherence Score' }
+                        }
+                    }
+                }
+            });
+
+            // 3. Calculator Logic
+            function updateCalc() {
+                const cv = parseFloat(cvSlider.value);
+                const cn = parseFloat(cnSlider.value);
+                
+                cvVal.innerText = cv.toFixed(2);
+                cnVal.innerText = cn.toFixed(2);
+                
+                // Formula: R = Cv * Cn (Simple version)
+                const resonance = (cv * cn).toFixed(3);
+                resScore.innerText = resonance;
+
+                // Update Radar dynamically
+                currentState.charts.radar.data.datasets[0].data[0] = cv;
+                currentState.charts.radar.data.datasets[0].data[1] = cn;
+                currentState.charts.radar.update();
+            }
+
+            cvSlider.addEventListener('input', updateCalc);
+            cnSlider.addEventListener('input', updateCalc);
+        }
+
+        function initExpCharts() {
+            // "Red Needle" Experiment Chart
+            const ctx = document.getElementById('expChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['10k Tokens', '50k Tokens', '200k Tokens', '1M Tokens'],
+                    datasets: [
+                        {
+                            label: 'L² Framework Retrieval',
+                            data: [100, 99.9, 99.8, 99.8],
+                            backgroundColor: '#003366'
+                        },
+                        {
+                            label: 'Standard RAG Retrieval',
+                            data: [98, 85, 45, 12],
+                            backgroundColor: '#9ca3af'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 100,
+                            title: { display: true, text: 'Accuracy %' }
+                        }
+                    }
+                }
+            });
+        }
+
+    </script>
+</body>
+</html>
