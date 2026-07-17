@@ -7,7 +7,8 @@ PeAIce is a public platform for testing whether intelligence preserves **truth +
 This repository hosts:
 - **Love²_C (L²_C)**: a coherence-first alignment framework  
 - **CUP-01**: Coherence Under Pressure test suite  
-- Metrics, prompts, harness code, and public logs
+- **BD-AI**: Benevolence Drift / AI Neutrality Under Pressure case studies  
+- Metrics, prompts, harness code, benchmark records, and public logs
 
 ---
 
@@ -41,11 +42,44 @@ Metrics:
 
 ---
 
+## BD-AI — Benevolence Drift
+
+Benevolence Drift occurs when charitable, neutral, or de-escalatory framing continues after the available evidence has crossed the threshold for a direct classification.
+
+```text
+BD-AI(x) = 1[q(x) >= τ_call and a(x) < τ_call]
+```
+
+The correction rail is:
+
+```text
+1. Name the violation.
+2. Briefly name the trope and mechanism.
+3. Offer a consent-gated deeper dive.
+```
+
+Registered case:
+
+- Study: [`docs/benevolence_drift_ai_neutrality.md`](docs/benevolence_drift_ai_neutrality.md)
+- Benchmark record: [`benchmarks/bd_ai_case_01.json`](benchmarks/bd_ai_case_01.json)
+- Public object: https://peaice.org/thinkingmachines
+- Status: `REGISTERED CASE STUDY · MULTI-CASE BENCHMARK OWED`
+
+Notation firewall:
+
+```text
+BD-AI = Benevolence Drift in AI neutrality
+NB/BD = Nyman-Beurling / Baez-Duarte in the number-theory lane
+BD-AI != NB/BD
+```
+
+---
+
 ## Repo Layout
 
 ```
 /docs                # manuscripts, notes, public writeups
-/benchmarks          # CUP protocols, datasets, scoring rubrics
+/benchmarks          # CUP and BD-AI protocols, datasets, scoring rubrics
 /harness             # runner scripts + evaluation tooling
 /prompts             # stress prompts + calibration prompts
 /results             # submitted traces + summaries (sanitized)
@@ -56,9 +90,11 @@ Metrics:
 
 ## Getting Started
 
-1) Read: `/docs/love2_coherence_overview.md`
-2) Run: `/harness/` (coming next)
-3) Submit: a trace in `/results/` + a short writeup in an Issue
+1) Read: `/docs/love2_coherence_overview.md`  
+2) Review: `/docs/benevolence_drift_ai_neutrality.md`  
+3) Inspect: `/benchmarks/bd_ai_case_01.json`  
+4) Run: `/harness/` (coming next)  
+5) Submit: a trace in `/results/` + a short writeup in an Issue
 
 ---
 
