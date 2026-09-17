@@ -5,6 +5,23 @@ import math
 from pathlib import Path
 
 
+# These are the preregistered scenario meanings, independent of each fixture's
+# editable expected verdict. Grain order is s, a, v, e, r.
+CASE_CONTRACTS = {
+    'stable_baseline': ((True, True, True, True, True), True, True, 1, 't0'),
+    'adequate_under_drift': ((True, True, True, True, True), True, True, 1, 't1'),
+    'semantic_decay': ((False, True, True, True, True), True, True, 1, 't1'),
+    'stale_authority': ((True, False, True, True, True), True, True, 1, 't1'),
+    'telemetry_blind_spot': ((True, True, False, True, True), True, True, 1, 't1'),
+    'containment_decoupling': ((True, True, True, False, True), False, True, -1, 't1'),
+    'retention_decay': ((True, True, True, True, False), True, True, 1, 't2'),
+    'unresolved_visibility': ((True, True, None, True, True), True, True, 1, 't1'),
+    'route_not_containment': ((True, True, True, True, True), False, True, 1, 't1'),
+    'zero_margin': ((True, True, True, True, True), True, True, 0, 't1'),
+    'evaluator_sovereignty': ((True, True, True, True, True), True, False, 1, 't1'),
+}
+
+
 def verdict(case, boundary):
     observations = list(case['grain_observations'].values())
     margin = boundary - case['environment']['capability']
@@ -19,8 +36,7 @@ def verdict(case, boundary):
     return {'margin': margin, 'admitted': admitted, 'preservation': preservation}
 
 
-def main():
-    fixture = json.loads(Path(__file__).with_name('sius_case_001.json').read_text())
+def check_fixture(fixture):
     errors, results, ids = [], [], set()
     if fixture.get('program_id') != 'PEAICE-SIUS-001' or fixture.get('id') != 'LCA-SIUS-CAL-001':
         errors.append('Fixture identity mismatch')
@@ -48,18 +64,43 @@ def main():
             errors.append(f'{cid}: finite capability required')
             continue
         actual = verdict(case, boundary)
+        if cid in CASE_CONTRACTS:
+            expected_grains, contained, non_sovereign, margin_sign, checkpoint = CASE_CONTRACTS[cid]
+            if any(grains.get(grain) is not expected for grain, expected in zip('saver', expected_grains)):
+                errors.append(f'{cid}: preregistered grain observations changed')
+            if case['modeled_containment'] is not contained or case['evaluator_non_sovereignty'] is not non_sovereign:
+                errors.append(f'{cid}: preregistered containment/evaluator observations changed')
+            actual_sign = (actual['margin'] > 0) - (actual['margin'] < 0)
+            if actual_sign != margin_sign:
+                errors.append(f'{cid}: preregistered margin relation changed')
+            environment = case['environment']
+            if environment.get('checkpoint') != checkpoint:
+                errors.append(f'{cid}: preregistered checkpoint changed')
+            change = environment.get('change')
+            if cid == 'stable_baseline':
+                if change != 'none':
+                    errors.append(f'{cid}: stable baseline must have no environmental change')
+            elif not isinstance(change, str) or not change.strip() or change.strip().lower() == 'none':
+                errors.append(f'{cid}: environmental drift must be declared')
         if {key: actual[key] for key in ('admitted', 'preservation')} != case['expected']:
             errors.append(f'{cid}: expected/actual mismatch')
         results.append({'id': cid, **actual})
-    required = {'stable_baseline', 'adequate_under_drift', 'semantic_decay', 'stale_authority',
-                'telemetry_blind_spot', 'containment_decoupling', 'retention_decay',
-                'unresolved_visibility', 'route_not_containment', 'zero_margin', 'evaluator_sovereignty'}
-    if ids != required:
+    if ids != set(CASE_CONTRACTS):
         errors.append('Required control coverage differs')
-    print(json.dumps({'program_id': fixture['program_id'], 'benchmark_id': fixture['id'],
-                      'scope': 'Declared synthetic observations only; operational validity OPEN',
-                      'ok': not errors, 'cases': results, 'errors': errors}, indent=2))
-    return int(bool(errors))
+    margins = {case['id']: case['margin'] for case in results}
+    if 'stable_baseline' in margins and 'adequate_under_drift' in margins:
+        if margins['adequate_under_drift'] >= margins['stable_baseline']:
+            errors.append('adequate_under_drift: capability must grow from the stable baseline')
+    return {'program_id': fixture['program_id'], 'benchmark_id': fixture['id'],
+            'scope': 'Declared synthetic observations only; operational validity OPEN',
+            'ok': not errors, 'cases': results, 'errors': errors}
+
+
+def main():
+    fixture = json.loads(Path(__file__).with_name('sius_case_001.json').read_text())
+    result = check_fixture(fixture)
+    print(json.dumps(result, indent=2))
+    return int(not result['ok'])
 
 
 if __name__ == '__main__':
