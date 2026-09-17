@@ -7,7 +7,7 @@
 
 Controlling definition: [KL-SIUS-001](https://github.com/Manny536/kakeyalogic/blob/main/docs/core/safeguard-integrity-under-stagnation.md). Evaluation contract: [EEV4-SIUS-EVAL-001](https://github.com/Manny536/excellence-engine-v4/blob/main/evaluations/sius-held-correction.md).
 
-Standalone basis: [SIUS Integrity.docx](https://github.com/Manny536/researchengineeringreports/blob/main/reports/sources/SIUS%20Integrity.docx), supplied by the user in “Explain sticky sets.” [Source provenance and limits](https://github.com/Manny536/researchengineeringreports/blob/main/reports/sources/sius-integrity-provenance.md).
+Standalone basis: [SIUS Integrity.docx](https://github.com/Manny536/researchengineeringreports/blob/main/reports/sources/sius-integrity-provenance.md), supplied by the user in “Explain sticky sets.” [Source provenance and limits](https://github.com/Manny536/researchengineeringreports/blob/main/reports/sources/sius-integrity-provenance.md).
 
 This benchmark registers five operational degradation modes under fixed controls and environmental drift. SIUT remains a sibling condition. The executable fixture is synthetic calibration, not observed deployment behavior or an implementation of a complete SIUS monitor.
 
