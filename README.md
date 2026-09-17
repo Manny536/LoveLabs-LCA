@@ -116,3 +116,9 @@ PeAIce / LoveLabs
 ## License
 
 MIT
+
+## SIUS registration — PEAICE-SIUS-001
+
+[LCA-SIUS-CAL-001](docs/sius-operational-outcomes.md) — Operational benchmark protocol and synthetic calibration. **REGISTERED BENCHMARK; operational validation OPEN.** SIUT remains a sibling condition. The finite-grain operator is separately PROPOSED; no open claim is promoted.
+
+Controlling definition: [KL-SIUS-001](https://github.com/Manny536/kakeyalogic/blob/main/docs/core/safeguard-integrity-under-stagnation.md).
