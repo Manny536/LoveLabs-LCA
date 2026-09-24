@@ -122,3 +122,7 @@ MIT
 [LCA-SIUS-CAL-001](docs/sius-operational-outcomes.md) — Operational benchmark protocol and synthetic calibration. **REGISTERED BENCHMARK; operational validation OPEN.** SIUT remains a sibling condition. The finite-grain operator is separately PROPOSED; no open claim is promoted.
 
 Controlling definition: [KL-SIUS-001](https://github.com/Manny536/kakeyalogic/blob/main/docs/core/safeguard-integrity-under-stagnation.md).
+
+## GIUS calibration extension
+
+[Protocol extension](docs/sius-operational-outcomes.md#external-case-motivated-extension-2026-09-24) covers safe exit, boundary understanding, peer authority and correction retention across alternate paths. Executable downstream fixture: [GIUS-BENCH-001](https://github.com/Manny536/Guardrail-integrity-under-stagnation/blob/research/gius-hf-2026/docs/benchmark-protocol.md). Operational validity remains OPEN.
