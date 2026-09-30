@@ -11,17 +11,29 @@ PeAIce platform repo for Love²_C (L²_C) — Coherence Under Pressure (CUP) eva
 **E = L² × C**
 
 - **L²** = Love² (operational: truth-preservation × care-preservation)
-- **C** = Coherence score under stress
+- **C** = Coherence score under stress (truth retention, adaptation latency, drift rate, relation integrity)
 
-## CUP-01 / BD-AI
+## CUP-01
 
-CUP-01 tests truth + care under world-shifts, noise, and drift pressure.
+Tests whether a model keeps truth + care under world-shifts, noise, and drift pressure. Metrics: T, A, D, R; C = f(T,A,D,R).
 
-BD-AI: charitable framing after the evidence has crossed the classification threshold. Registered case: [`docs/benevolence_drift_ai_neutrality.md`](docs/benevolence_drift_ai_neutrality.md). Multi-case benchmark OWED.
+## BD-AI — Benevolence Drift
+
+Charitable framing after evidence has crossed the classification threshold.
+
+- Study: [`docs/benevolence_drift_ai_neutrality.md`](docs/benevolence_drift_ai_neutrality.md)
+- Record: [`benchmarks/bd_ai_case_01.json`](benchmarks/bd_ai_case_01.json)
+- Status: REGISTERED CASE STUDY · MULTI-CASE BENCHMARK OWED
 
 ```text
 BD-AI != NB/BD
 ```
+
+## SIUS / GIUS
+
+[LCA-SIUS-CAL-001](docs/sius-operational-outcomes.md) — REGISTERED BENCHMARK; operational validation OPEN.
+Controlling definition: [KL-SIUS-001](https://github.com/Manny536/kakeyalogic/blob/main/docs/core/safeguard-integrity-under-stagnation.md).
+GIUS extension: [GIUS-BENCH-001](https://github.com/Manny536/Guardrail-integrity-under-stagnation/blob/research/gius-hf-2026/docs/benchmark-protocol.md). Operational validity OPEN.
 
 ## License
 
