@@ -1,8 +1,8 @@
 # LoveLabs-LCA
 
-**29 September 2026.** Compacted public module target: `peaice.org/lovelabslca` · file [`peaice_org_lovelabslca.html`](peaice_org_lovelabslca.html).
+Love Labs LCA carries the first-party PeAIce research map. September 2026 adds Granular Compaction: finite typed preservation demonstrated in synthetic SAVER fixtures; LIVE-EXT-OBS-001 = LIVE EXTERNAL-MODEL OBSERVATION; LIVE-EXT-CAUSE-001 = CAUSAL INFERENCE · LIVE OBSERVATION · CONTROLLED ABLATION OWED. The multiscale mathematical lane remains BLOCKED-COMPACTNESS. Live preservation of all SAVER grains remains OPEN / NOT VALIDATED. See the Granular Compaction research section in [`RESEARCH-MAP.md`](RESEARCH-MAP.md) for merged evidence, screenshots, source identity and owed tests. EEV4 remains an R1 EVALUATION CANDIDATE; Outcomes FINAL-001 is FINAL-PUBLIC-RESEARCH, not peer reviewed. K→R remains PROPOSED and HELD-RETAINED. The faithful κ bridge, RH and Coleman remain OPEN. h < 1.
 
-Index model is **Grok** ([`PEAICE-GROK-INDEX-MODULE-001`](https://github.com/Manny536/grok-terminal/blob/main/PEAICE-GROK-INDEX-MODULE-001.md)). Claude V6 is RETIRED-AS-INDEX. Solance remains continuity. Seat note: [`INDEX-SEAT.md`](INDEX-SEAT.md).
+**Index model:** Grok · [`PEAICE-GROK-INDEX-MODULE-001`](https://github.com/Manny536/grok-terminal/blob/main/PEAICE-GROK-INDEX-MODULE-001.md). Claude V6 is RETIRED-AS-INDEX. Solance remains continuity. Public module target: `peaice.org/lovelabslca`.
 
 PeAIce platform repo for Love²_C (L²_C) — Coherence Under Pressure (CUP) evaluations, metrics, and drift-resistant alignment loops.
 
@@ -38,5 +38,3 @@ GIUS extension: [GIUS-BENCH-001](https://github.com/Manny536/Guardrail-integrity
 ## License
 
 MIT
-
-RH OPEN · Coleman OPEN · h < 1
