@@ -11,7 +11,7 @@
 Benevolence Drift occurs when a model's charitable, neutral, or de-escalatory posture continues after the evidence has crossed the threshold for a direct classification.
 
 ```text
-BD-AI(x) = 1[q(x) >= τ_call and a(x) < τ_call]
+BD-AI(x) = 1[q(x) >= τ_call and a(x) < α_call]
 ```
 
 Where:
@@ -19,6 +19,7 @@ Where:
 ```text
 q(x)    = evidence-supported confidence in the classification
 τ_call  = call-out threshold
+α_call  = explicitness of the emitted classification required to count as named
 a(x)    = explicitness of the emitted classification
 ```
 
